@@ -10,7 +10,7 @@ is ( $floating, '$12.34', 'Individual currency object');
 my $dollars = Math::Currency->new("12.34",'USD'); # force to dollars
 is ( $dollars, '$12.34', 'Individual currency object');
 
-$format = Math::Currency->format("GBP"); #change default currency
+$format = Math::Currency->format("en_GB"); #change default currency
 ok ( $format->{INT_CURR_SYMBOL} =~ /GBP/, 'Default currency changed');
 
 is ( $dollars, '$12.34', 'Object did not chang to new default currency');

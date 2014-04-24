@@ -280,6 +280,10 @@ sub format    #05/17/99 1:58:PM
 
 sub as_float {
     my $self   = shift;
+    if ( (caller)[0] =~ /Math\::BigInt/ )    # only when called from objectify()
+    {
+        return $self;
+    }
     my $format = $self->format;
     my $string = $self->copy->bfround( -$format->{FRAC_DIGITS} )->SUPER::bstr();
     return $string;
@@ -333,7 +337,7 @@ sub localize    #08/17/02 7:58:PM
     my $localeconv = POSIX::localeconv(); 
 
     # so you can test to see if locale was effective
-    return 0 if ! exists $localeconv->{'currency_symbol'};
+    return 0 unless (defined $localeconv and exists $localeconv->{'currency_symbol'});
 
     $$format = {
         INT_CURR_SYMBOL   => $localeconv->{'int_curr_symbol'}   || '',
@@ -369,6 +373,7 @@ sub unknown_currency    #02/03/05 4:37am
 
 {
     my ($currency) = @_;
+    return if ($^O =~ m/Win32/);
     $DB::single=1;
     open LOCALES, "-|", "locale -a";
     while (my $LOCALE = <LOCALES>) {
